@@ -1,0 +1,188 @@
+
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Ranking de Vendas - Concessionários</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f6f6f6;
+      padding: 40px;
+      text-align: center;
+    }
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px #0001;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 32px;
+      overflow-x: auto;
+    }
+    h1 {
+      margin-bottom: 24px;
+      font-size: 2rem;
+      color: #0047bb;
+    }
+    #atualizacao {
+      color: #666;
+      font-size: 0.9em;
+      margin-bottom: 12px;
+    }
+    canvas {
+      max-width: 950px;
+      height: 620px !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Ranking Semanal de Vendas</h1>
+    <div id="atualizacao">Última atualização: 31/07/2025</div>
+    <canvas id="vendasChart"></canvas>
+  </div>
+  <script>
+    // DADOS DOS CONCESSIONÁRIOS
+    const nomes = [
+      "Manuel Joaquim Paiva e Filhos Lda",
+      "R&Fmoto",
+      "MOTO CRUZ",
+      "Foz - Sociedade Comercial de Motociclos Lda",
+      "ANTERO RODRIGUES DA SILVA & FILHOS, LDA",
+      "António Eduardo Coutinho Frias",
+      "BIKE SHOP",
+      "Motos Vitor e Ricardo, LDA",
+      "ALEXANDRE DIAS LDA",
+      "LUIS MANUEL RODRIGUES DE SOUS E FILHOS LDA",
+      "Almerindo & Filhos,Lda",
+      "Motor 7 Lda",
+      "HSG",
+      "Machados",
+      "Centro Ciclista Sineense, Lda",
+      "GARAGEM NOVA - JOÃO,LOPES & OTERELO,LDA",
+      "MJ MOREIRA",
+      "Viana Motos",
+      "PGMOTOS, LDA",
+      "Motex",
+      "J. B. Comércio de Motos, Lda",
+      "Normoto",
+      "LYSBOA garage",
+      "Bluemotor",
+      "Motévora Lda.",
+      "MotoBelas",
+      "Speedcity",
+      "Benimoto",
+      "MOTOSTAR,LDA",
+      "MOTOFUNDADOR-GUIMARÃES, LDA",
+      "STAND GIRA MOTOS LDA",
+      "Dinamica",
+      "Race Feel",
+      "Motocar",
+      "Crossmoto",
+      "Radical Bike",
+      "Moto Vaz",
+      "LMOTO",
+      "IF Motor"
+    ];
+
+    const vendas = [
+      5,
+      132,
+      172,
+      3,
+      209,
+      170,
+      164,
+      213,
+      210,
+      42,
+      68,
+      180,
+      214,
+      48,
+      89,
+      57,
+      76,
+      25,
+      115,
+      204,
+      11,
+      212,
+      216,
+      217,
+      197,
+      20,
+      189,
+      196,
+      192,
+      15,
+      4,
+      26,
+      218,
+      198,
+      8,
+      150,
+      169,
+      206,
+      219
+    ];
+
+    // Ordenar do maior para o menor
+    const indicesOrdenados = vendas
+      .map((v, i) => [v, i])
+      .sort((a, b) => b[0] - a[0])
+      .map((el) => el[1]);
+    const nomesOrdenados = indicesOrdenados.map(i => nomes[i]);
+    const vendasOrdenadas = indicesOrdenados.map(i => vendas[i]);
+
+    // Cores automáticas (top 3 com destaque)
+    const backgroundColors = vendasOrdenadas.map((v, i) => {
+      if(i === 0) return '#FFD700';   // 1º - Ouro
+      if(i === 1) return '#C0C0C0';   // 2º - Prata
+      if(i === 2) return '#CD7F32';   // 3º - Bronze
+      return "#0047bb";
+    });
+
+    const ctx = document.getElementById('vendasChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: nomesOrdenados,
+        datasets: [{
+          label: 'Nº Total de Vendas',
+          data: vendasOrdenadas,
+          backgroundColor: backgroundColors,
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: false,
+        plugins: {
+          legend: { display: false },
+          title: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function(ctx) {
+                return ctx.parsed.x + ' vendas';
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            beginAtZero: true,
+            ticks: { precision:0 }
+          },
+          y: {
+            ticks: {
+              font: { size: 12 }
+            }
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
